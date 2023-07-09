@@ -22,14 +22,21 @@ If P receives a Coordinator message, it treats the sender as the coordinator.
 I opted to use a Socket Server as the gateway with which the processes communicate.
 
 ## The approach I followed for Sockets depended on 2 elements:
-  •	The Process itself
+  •	The Process itself.
+  
   •	A Server responsible for relaying Coordinator Pings and Election Requests.
   
 ## How it works:
   •	The Server starts and creates a socket at port 1543 (this is the port I chose) and awaits a connection request.
+  
   •	When a process is created, it connects to said socket, sends its ID, in order for it to be tracked by the “ProcessHandler” on the server, and Requests an Election.
+  
   •	Since it’s uncontested as the current candidate, it becomes the coordinator.
+  
   •	The Coordinator simply broadcasts on the server, and the processes acknowledge (if any exist).
+  
   •	When a new process is created, it requests an election, and whoever has the bigger Process ID wins.
+  
   •	If a Coordinator dies, one of them, the one that notices that the coordinator is dead, makes an Election request.
+  
   •	A process only responds to an election if its ID is bigger than the requester’s ID, otherwise it awaits a coordinator ping.
